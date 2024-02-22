@@ -1,0 +1,480 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.GameBetMapper">
+    <resultMap type="com.bistro.module.game.domain.GameBet" id="GameBetResult">
+        <result property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="openId" column="open_id"/>
+        <result property="gameCode" column="game_code"/>
+        <result property="betAmount" column="bet_amount"/>
+        <result property="multiplier" column="multiplier"/>
+        <result property="payoutAmount" column="payout_amount"/>
+        <result property="status" column="status"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="currency" column="currency"/>
+        <result property="userName" column="user_name"/>
+        <result property="subGameCode" column="sub_game_code"/>
+        <result property="periodId" column="period_id"/>
+        <result property="roundNo" column="round_no"/>
+    </resultMap>
+
+    <sql id="selectGameBetVo">
+        select id,
+               uid,
+               open_id,
+               game_code,
+               bet_amount,
+               multiplier,
+               payout_amount,
+               status,
+               create_time,
+               update_time,
+               currency,
+               user_name,
+               sub_game_code,
+               period_id,
+               round_no
+        from game_bet
+    </sql>
+
+    <select id="selectGameBetList" parameterType="com.bistro.module.game.domain.GameBet" resultMap="GameBetResult">
+        <include refid="selectGameBetVo"/>
+        <where>
+            <if test="id != null ">
+                and id = #{id}
+            </if>
+            <if test="uid != null ">
+                and uid = #{uid}
+            </if>
+            <if test="openId != null  and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <if test="currency != null  and currency != ''">
+                and currency = #{currency}
+            </if>
+            <if test="userName != null  and userName != ''">
+                and user_name like concat('%', #{userName}, '%')
+            </if>
+            <if test="subGameCode != null  and subGameCode != ''">
+                and sub_game_code = #{subGameCode}
+            </if>
+            <if test="periodId != null ">
+                and period_id = #{periodId}
+            </if>
+            <if test="roundNo != null  and roundNo != ''">
+                and round_no = #{roundNo}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGameBetById" parameterType="Long" resultMap="GameBetResult">
+        <include refid="selectGameBetVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGameBet" parameterType="com.bistro.module.game.domain.GameBet" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into game_bet
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="openId != null and openId != ''">
+                open_id,
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                game_code,
+            </if>
+            <if test="betAmount != null">
+                bet_amount,
+            </if>
+            <if test="multiplier != null">
+                multiplier,
+            </if>
+            <if test="payoutAmount != null">
+                payout_amount,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="currency != null and currency != ''">
+                currency,
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name,
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                sub_game_code,
+            </if>
+            <if test="periodId != null">
+                period_id,
+            </if>
+            <if test="roundNo != null and roundNo != ''">
+                round_no,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">
+                #{uid},
+            </if>
+            <if test="openId != null and openId != ''">
+                #{openId},
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                #{gameCode},
+            </if>
+            <if test="betAmount != null">
+                #{betAmount},
+            </if>
+            <if test="multiplier != null">
+                #{multiplier},
+            </if>
+            <if test="payoutAmount != null">
+                #{payoutAmount},
+            </if>
+            <if test="status != null">
+                #{status},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+            <if test="currency != null and currency != ''">
+                #{currency},
+            </if>
+            <if test="userName != null and userName != ''">
+                #{userName},
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                #{subGameCode},
+            </if>
+            <if test="periodId != null">
+                #{periodId},
+            </if>
+            <if test="roundNo != null and roundNo != ''">
+                #{roundNo},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateGameBet" parameterType="com.bistro.module.game.domain.GameBet">
+        update game_bet
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+            <if test="openId != null and openId != ''">
+                open_id = #{openId},
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                game_code = #{gameCode},
+            </if>
+            <if test="betAmount != null">
+                bet_amount = #{betAmount},
+            </if>
+            <if test="multiplier != null">
+                multiplier = #{multiplier},
+            </if>
+            <if test="payoutAmount != null">
+                payout_amount = #{payoutAmount},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="currency != null and currency != ''">
+                currency = #{currency},
+            </if>
+            <if test="userName != null and userName != ''">
+                user_name = #{userName},
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                sub_game_code = #{subGameCode},
+            </if>
+            <if test="periodId != null">
+                period_id = #{periodId},
+            </if>
+            <if test="roundNo != null and roundNo != ''">
+                round_no = #{roundNo},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGameBetById" parameterType="Long">
+        delete
+        from game_bet
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteGameBetByIds" parameterType="String">
+        delete from game_bet where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectBetHistoryByUid" parameterType="com.bistro.module.api.vo.GamePlayRequest"
+            resultType="com.bistro.module.api.vo.GamePlayInfo">
+        select id,
+               bet_amount                              as betAmount,
+               multiplier,
+               payout_amount                           as payoutAmount,
+               DATE_FORMAT(create_time, '%Y-%m-%d %T') as playTime,
+               user_name                               as player,
+               currency
+        from game_bet
+        where status in (2, 4, 5, 6, 7, 8)
+          and uid = #{uid}
+          and game_code = #{gameCode}
+        order by create_time desc
+                limit #{rows}
+    </select>
+
+    <select id="selectBetHistory" parameterType="com.bistro.module.api.vo.GamePlayRequest"
+            resultType="com.bistro.module.api.vo.GamePlayInfo">
+        select id, bet_amount as betAmount, multiplier, payout_amount as payoutAmount,
+        unix_timestamp(create_time) as playTime, user_name as player, currency from game_bet
+
+        <where>
+            status in(2,4,5,6,7,8) and game_code = #{gameCode}
+            <if test="uid != null">
+                and uid = #{uid}
+            </if>
+        </where>
+        <if test="order != null and order != ''">
+            order by ${order} desc
+        </if>
+        limit ${rows}
+    </select>
+    <select id="selectBetGameUser" resultType="com.bistro.module.game.domain.BetGameUserVo">
+        select gb.`id`AS bet_id,
+        gbase.`code` as game_code,
+        gbase.`name` as game_name,
+        gb.uid,
+        gu.`name` as user_name,
+        gu.from_code as merchant_code,
+        gb.bet_amount,
+        gb.multiplier,
+        gb.payout_amount,
+        gb.currency,
+        gb.status,
+        g.game_content,
+        gb.create_time as bet_time,
+        gb.sub_game_code
+        from game_bet gb
+        join game_user_info gu on gb.uid = gu.id
+        left join `game_record_info` g on g.bet_id = gb.id
+        left join `game_base_info` gbase on gb.`game_code` = gbase.`code`
+        <where>
+            <if test="beginCreateTime != null and endCreateTime!=null">
+                and gb.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                and gb.game_code = #{gameCode}
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                and gb.sub_game_code = #{subGameCode}
+            </if>
+            <if test="userName != null and userName!=''">
+                and gu.name = #{userName}
+            </if>
+        </where>
+        order by gb.create_time desc
+    </select>
+
+    <select id="selectBetPeriodStatistics" resultType="com.bistro.module.game.domain.BetPeriodStatisticsVo">
+        SELECT b.period,
+        SUM(b.bet_amount) AS bet_amount_total,
+        SUM(b.payout_amount) AS payout_amount_total,
+        count(id) AS bet_count,
+        sum(IF(b.STATUS = 4 OR b.STATUS = 5 OR b.STATUS = 8, 1, 0)) AS payout_count
+        FROM (SELECT DATE_FORMAT(gb.create_time, '%H时') AS period,
+        gb.bet_amount,
+        gb.payout_amount,
+        gb.STATUS,
+        gb.user_name,
+        gb.id
+        FROM game_bet gb
+        <if test="merchantCode != null and merchantCode != ''">
+            INNER JOIN game_user_info gu ON gu.id = gb.uid
+        </if>
+        WHERE gb.status in (2, 4, 5, 6, 8)
+        <if test="beginCreateTime != null and endCreateTime!=null">
+            AND gb.create_time between #{beginCreateTime} and #{endCreateTime}
+        </if>
+        <if test="gameCode != null and gameCode != ''">
+            AND gb.game_code = #{gameCode}
+        </if>
+        <if test="merchantCode != null and merchantCode != ''">
+            AND gu.from_code = #{merchantCode}
+        </if>
+        <if test="subGameCode != null and subGameCode != ''">
+            and gb.sub_game_code = #{subGameCode}
+        </if>
+        ) b
+        GROUP BY b.period
+    </select>
+
+
+    <select id="selectBetRecord" resultType="com.bistro.module.game.domain.BetGameRecordVo">
+        select
+        gr.id as record_id,
+        gb.`id`AS bet_id,
+        gb.uid,
+        gb.open_id,
+        gb.user_name,
+        gb.game_code,
+        gb.sub_game_code,
+        gb.period_id,
+        gb.round_no,
+        gb.bet_amount,
+        gb.status,
+        gb.currency,
+        gb.create_time as bet_time,
+        gr.game_content
+        from game_bet gb
+        join `game_record_info` gr on gr.bet_id = gb.id
+        <where>
+            <if test="gameCode != null and gameCode != ''">
+                and gb.game_code = #{gameCode}
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                and gb.sub_game_code = #{subGameCode}
+            </if>
+            <if test="periodId != null">
+                and gb.period_id = #{periodId}
+            </if>
+            <if test="status != null">
+                and gb.status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <update id="updateBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update game_bet
+            <set>
+                <if test="item.multiplier != null">
+                    multiplier = #{item.multiplier},
+                </if>
+                <if test="item.payoutAmount != null">
+                    payout_amount = #{item.payoutAmount},
+                </if>
+                <if test="item.status != null">
+                    status = #{item.status},
+                </if>
+                <if test="item.updateTime != null">
+                    update_time = #{item.updateTime},
+                </if>
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <update id="updateStatusBatch" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update game_bet
+            <set>
+                status = #{item.status},
+                update_time = #{item.updateTime},
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectBetForExport" resultType="com.bistro.module.game.domain.BetGameUserVo">
+        select id AS bet_id,
+               game_code,
+               bet_amount,
+               multiplier,
+               payout_amount,
+               status,
+               create_time as bet_time,
+               currency,
+               user_name
+        from game_bet gb
+        <where>
+            <if test="beginCreateTime != null and endCreateTime!=null">
+                and gb.create_time between #{beginCreateTime} and #{endCreateTime}
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                and gb.game_code = #{gameCode}
+            </if>
+            <if test="subGameCode != null and subGameCode != ''">
+                and gb.sub_game_code = #{subGameCode}
+            </if>
+            <if test="userName != null and userName!=''">
+                and gu.name = #{userName}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectBetSummaryStatistics" resultType="com.bistro.module.game.domain.BetPeriodStatisticsVo">
+        select
+        SUM(gb.bet_amount) AS bet_amount_total,
+        SUM(gb.payout_amount) AS payout_amount_total,
+        sum(IF(gb.STATUS = 4 OR gb.STATUS = 5 or gb.STATUS = 8, 1, 0)) AS payout_count,
+        count(gb.id) AS bet_count
+        FROM game_bet gb
+        <if test="merchantCode != null and merchantCode != ''">
+            INNER JOIN game_user_info gu ON gu.id = gb.uid
+        </if>
+        WHERE gb.status in (2, 4, 5, 6, 8)
+        <if test="beginCreateTime != null and endCreateTime!=null">
+            AND gb.create_time between #{beginCreateTime} and #{endCreateTime}
+        </if>
+        <if test="gameCode != null and gameCode != ''">
+            AND gb.game_code = #{gameCode}
+        </if>
+        <if test="merchantCode != null and merchantCode != ''">
+            AND gu.from_code = #{merchantCode}
+        </if>
+        <if test="subGameCode != null and subGameCode != ''">
+            and gb.sub_game_code = #{subGameCode}
+        </if>
+    </select>
+
+    <select id="selectBetSummaryStatisticsPerUser" resultType="com.bistro.module.game.domain.BetPeriodStatisticsVo">
+        select gb.uid,
+        SUM(gb.bet_amount) AS bet_amount_total,
+        SUM(gb.payout_amount) AS payout_amount_total
+        FROM game_bet gb
+        <if test="merchantCode != null and merchantCode != ''">
+            INNER JOIN game_user_info gu ON gu.id = gb.uid
+        </if>
+        WHERE gb.status in (4, 6)
+        <if test="beginCreateTime != null and endCreateTime!=null">
+            AND gb.create_time between #{beginCreateTime} and #{endCreateTime}
+        </if>
+        <if test="gameCode != null and gameCode != ''">
+            AND gb.game_code = #{gameCode}
+        </if>
+        <if test="merchantCode != null and merchantCode != ''">
+            AND gu.from_code = #{merchantCode}
+        </if>
+        <if test="subGameCode != null and subGameCode != ''">
+            and gb.sub_game_code = #{subGameCode}
+        </if>
+        group by gb.uid
+    </select>
+</mapper>

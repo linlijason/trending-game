@@ -1,0 +1,146 @@
+jasypt:
+    encryptor:
+        #password: daaaz
+        algorithm: PBEWITHHMACSHA512ANDAES_256
+
+encrypt:
+    jdbc-username: ENC(/oMZgrN+eeMqNn43o8SLr7wqkAdMkhtgViIe1O8VlD/qMxcbIcUiKwYRjemfuHdp)
+    jdbc-password: ENC(xO4TTQlYi1SaoyeAmisLVXYNfMpK6FCMEfXjc9GIHKfH+37+oBex+mRnlF7/dAVa)
+    jdbc-url: ENC(Tjqmo+37xvcO6el7babP9zF5cx7hrd9KFx3KBR7J3x0aWWoothg+jkEJagIpSqmBLBCCvzO6o6zgAlSvkLUiC3VGk8Xcyl5PL9vj/71sOupXEIkqEycLKUhEkR4OwQZXpbB6yxbAT9S1bBqRecfbUg==)
+
+# 数据源配置
+spring:
+    datasource:
+        type: com.alibaba.druid.pool.DruidDataSource
+        driverClassName: com.mysql.cj.jdbc.Driver
+        druid:
+            # 主库数据源
+            master:
+                url: jdbc:mysql://${encrypt.jdbc-url}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+                username: ${encrypt.jdbc-username}
+                password: ${encrypt.jdbc-password}
+            # 从库数据源
+            slave:
+                enabled: false
+                url:
+                username:
+                password:
+            # 初始连接数
+            initialSize: 1
+            # 最小连接池数量
+            minIdle: 10
+            # 最大连接池数量
+            maxActive: 20
+            # 配置获取连接等待超时的时间
+            maxWait: 60000
+            # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+            timeBetweenEvictionRunsMillis: 60000
+            # 配置一个连接在池中最小生存的时间，单位是毫秒
+            minEvictableIdleTimeMillis: 300000
+            # 配置一个连接在池中最大生存的时间，单位是毫秒
+            maxEvictableIdleTimeMillis: 900000
+            # 配置检测连接是否有效
+            validationQuery: SELECT 1
+            testWhileIdle: true
+            testOnBorrow: false
+            testOnReturn: false
+            webStatFilter:
+                enabled: false
+            statViewServlet:
+                enabled: false
+                # 设置白名单，不填则允许所有访问
+                allow:
+                url-pattern: /druid/*
+                # 控制台管理用户名和密码
+                login-username: ruoyi
+                login-password: 123456
+            filter:
+                stat:
+                    enabled: false
+                    # 慢SQL记录
+                    log-slow-sql: true
+                    slow-sql-millis: 1000
+                    merge-sql: true
+                wall:
+                    config:
+                        multi-statement-allow: true
+    mail:
+        host: 'smtp.163.com'
+        port:  25 #587
+        username: 'hanbinll@163.com'
+        password: 'FHVKGRUIBYOTEJPV'
+        protocol: smtp
+        from: 'hanbinll@163.com'
+        default-encoding: utf-8
+        properties:
+            mail:
+                smtp:
+                    starttls:
+                        enable: true
+                        required: true
+    redis:
+        redisson:
+            file: classpath:redisson_prodind.yml
+
+#        client-type: jedis
+#        jedis:
+#            pool:
+#                min-idle: 1
+#                max-active: 500
+#                max-idle: 4
+#        cluster:
+#            nodes:
+
+urls:
+    ssUrl: 'http://172.28.8.124:9999'
+    seamlessUrl: 'http://admin.inr.smashinr.t1t.in/bistro_service_api/6012'
+    gameLaunchUrl:
+        60: 'https://ind.bistro-gaming.com'
+        61: 'https://ind.bistro-gaming.com/coin/'
+    websocket:
+        binance: 'wss://stream.binance.com:9443/stream?streams='
+
+logging:
+    config: classpath:logback-prodind.xml
+
+
+
+logback:
+    level: info
+
+coin:
+    #支持的币种 下面的stream，symbol 一一对应
+    supports: BTC
+    #订阅币安stream 必须包含supports 支持的币种
+    stream:
+        BTC: 'btcusdt@ticker'
+    symbol:
+        BTC: 'BTCUSDT'
+    #投注和开奖时间 秒
+    duration:
+        bet: 120
+        betReal: 90
+        draw: 5
+    batchPayout: true
+    #调用batchpayout接口一次数量
+    batchPayoutGroupSize: 20
+    #开奖时数据连续性检查，测试环境可能因为数据丢失造成取不到开奖时间前2秒数据。生产环境需要check
+    drawTimeContinuityCheck: true
+    #平 本金退款率
+    goTieRefundMultiplier: 0.94
+#商户配置
+merchant:
+    config:
+        bistro20220105:
+            secureKey: ENC(JQEcU+ZgPF3D2cUv/eJWgyygzOoub2Ul345e7D6T9I9M0gBTBxDSvTE5FKgMf9rsQVdBnKHMrtWTla+t75xF1XHTihVeiba/EwqV9W8m2EU=)
+            signKey: ENC(t7aiEwVpck1zEHff0knY33gMjUdb6eraX9bjKVrmw33bt+BEDtC99djegsi4U5fDCw+Bx0giBxCAicIc62KaYSGmAi+xDUDEArXzzAtIZjA=)
+
+currency:
+    default: "INR"
+
+export:
+    path: '/opt/file/'
+
+admin:
+    name: bistro-admin-INR
+

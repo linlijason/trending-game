@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.GamePeriodMapper">
+    
+    <resultMap type="com.bistro.module.game.domain.GamePeriod" id="GamePeriodResult">
+        <result property="id"    column="id"    />
+        <result property="gameCode"    column="game_code"    />
+        <result property="subGameCode"    column="sub_game_code"    />
+        <result property="roundNo"    column="round_no"    />
+        <result property="betStartTime"    column="bet_start_time"    />
+        <result property="betEndTime"    column="bet_end_time"    />
+        <result property="drawTime"    column="draw_time"    />
+        <result property="drawValue"    column="draw_value"    />
+        <result property="drawResult"    column="draw_result"    />
+        <result property="orderCount"    column="order_count"    />
+        <result property="income"    column="income"    />
+        <result property="extInfo"    column="ext_info"    />
+    </resultMap>
+
+    <sql id="selectGamePeriodVo">
+        select id, game_code, sub_game_code, round_no, bet_start_time, bet_end_time, draw_time, draw_value, draw_result, order_count, income, ext_info from game_period
+    </sql>
+
+    <select id="selectGamePeriodList" parameterType="com.bistro.module.game.domain.GamePeriod" resultMap="GamePeriodResult">
+        <include refid="selectGamePeriodVo"/>
+        <where>  
+            <if test="gameCode != null  and gameCode != ''"> and game_code = #{gameCode}</if>
+            <if test="subGameCode != null  and subGameCode != ''"> and sub_game_code = #{subGameCode}</if>
+            <if test="roundNo != null  and roundNo != ''"> and round_no = #{roundNo}</if>
+            <if test="params.beginDrawTime != null and params.beginDrawTime != '' and params.endDrawTime != null and params.endDrawTime != ''"> and draw_time between #{params.beginDrawTime} and #{params.endDrawTime}</if>
+        </where>
+        order by draw_time desc
+    </select>
+    
+    <select id="selectGamePeriodById" parameterType="Long" resultMap="GamePeriodResult">
+        <include refid="selectGamePeriodVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGamePeriod" parameterType="com.bistro.module.game.domain.GamePeriod" useGeneratedKeys="true" keyProperty="id">
+        insert into game_period
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="gameCode != null and gameCode != ''">game_code,</if>
+            <if test="subGameCode != null and subGameCode != ''">sub_game_code,</if>
+            <if test="roundNo != null and roundNo != ''">round_no,</if>
+            <if test="betStartTime != null">bet_start_time,</if>
+            <if test="betEndTime != null">bet_end_time,</if>
+            <if test="drawTime != null">draw_time,</if>
+            <if test="drawValue != null">draw_value,</if>
+            <if test="drawResult != null">draw_result,</if>
+            <if test="orderCount != null">order_count,</if>
+            <if test="income != null">income,</if>
+            <if test="extInfo != null">ext_info,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="gameCode != null and gameCode != ''">#{gameCode},</if>
+            <if test="subGameCode != null and subGameCode != ''">#{subGameCode},</if>
+            <if test="roundNo != null and roundNo != ''">#{roundNo},</if>
+            <if test="betStartTime != null">#{betStartTime},</if>
+            <if test="betEndTime != null">#{betEndTime},</if>
+            <if test="drawTime != null">#{drawTime},</if>
+            <if test="drawValue != null">#{drawValue},</if>
+            <if test="drawResult != null">#{drawResult},</if>
+            <if test="orderCount != null">#{orderCount},</if>
+            <if test="income != null">#{income},</if>
+            <if test="extInfo != null">#{extInfo},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGamePeriod" parameterType="com.bistro.module.game.domain.GamePeriod">
+        update game_period
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="gameCode != null and gameCode != ''">game_code = #{gameCode},</if>
+            <if test="subGameCode != null and subGameCode != ''">sub_game_code = #{subGameCode},</if>
+            <if test="roundNo != null and roundNo != ''">round_no = #{roundNo},</if>
+            <if test="betStartTime != null">bet_start_time = #{betStartTime},</if>
+            <if test="betEndTime != null">bet_end_time = #{betEndTime},</if>
+            <if test="drawTime != null">draw_time = #{drawTime},</if>
+            <if test="drawValue != null">draw_value = #{drawValue},</if>
+            <if test="drawResult != null">draw_result = #{drawResult},</if>
+            <if test="orderCount != null">order_count = #{orderCount},</if>
+            <if test="income != null">income = #{income},</if>
+            <if test="extInfo != null">ext_info = #{extInfo},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGamePeriodById" parameterType="Long">
+        delete from game_period where id = #{id}
+    </delete>
+
+    <delete id="deleteGamePeriodByIds" parameterType="String">
+        delete from game_period where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <update id="updateGamePeriodDrawInfo" parameterType="com.bistro.module.game.domain.GamePeriod">
+        update game_period
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="drawTime != null">draw_time = #{drawTime},</if>
+            <if test="drawValue != null">draw_value = #{drawValue},</if>
+            <if test="drawResult != null">draw_result = #{drawResult},</if>
+            <if test="orderCount != null">order_count = #{orderCount},</if>
+            <if test="income != null">income = #{income},</if>
+            <if test="extInfo != null">ext_info = #{extInfo},</if>
+        </trim>
+        where id = #{id} and drawValue!= ''
+    </update>
+
+</mapper>

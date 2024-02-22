@@ -1,0 +1,241 @@
+api:
+
+dockerfile:
+
+FROM openjdk:17.0.1-jdk-oracle
+
+env SPRING_ACTIVE -Dspring.profiles.active=st
+env JAVA_OPTS -server -Duser.timezone=GMT+8 Xmx1344M -Xms1344M -Xmn448M -XX:MaxMetaspaceSize=192M -XX:MetaspaceSize=192M
+env JAVA_EXPORTS --add-exports java.base/sun.reflect.generics.reflectiveObjects=ALL-UNNAMED
+
+ENTRYPOINT ["sh", "-c", "exec java $SPRING_ACTIVE $JAVA_OPTS $JASYPT_PASSWORD $JAVA_EXPORTS -jar /opt/app/app.jar"]
+
+
+docker build -t apist:v1221 .
+
+运行：
+docker run -itd --name apist --restart=always --env JASYPT_PASSWORD="-Djasypt.encryptor.password=2bcsds" -v /opt/app:/opt/app -v /opt/file:/opt/file -p 8018:8080 apist:v1221
+
+
+
+
+管理后台：
+nginx.config
+
+user root;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+worker_rlimit_nofile 100000;
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    use epoll;
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request_time" "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 2048;
+    client_max_body_size 20m;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    root         /usr/share/nginx/html;
+
+    server {
+        listen      80;
+
+        if ($time_iso8601 ~ "^(\d{4})-(\d{2})-(\d{2})") {
+                                set $year $1;
+                                set $month $2;
+                                set $day $3;
+        }
+        access_log /var/log/nginx/access_$year-$month-$day.log main;
+
+        location /file/ {
+            alias /opt/file/;
+                add_header Content-Disposition: 'attachment';
+                add_header  Content-Type application/octet-stream;
+        }
+
+        location /api/ {
+            proxy_pass http://apist:8080/;
+            proxy_redirect default;
+        }
+        location / {
+                root   /usr/share/nginx/html;
+                index  index.html index.htm;
+            }
+    }
+}
+
+docker:
+docker run --name mgtst --restart=always --link apist:apist -p8019:80  -v /opt/mgtnginx/nginx.conf:/etc/nginx/nginx.conf -v /opt/file/:/opt/file/ -v /opt/mgtnginx/html:/usr/share/nginx/html  -v /opt/mgtnginx/log:/var/log/nginx -d nginx
+
+
+
+
+
+-------
+前台
+nginx.config
+
+user root;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+worker_rlimit_nofile 100000;
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    use epoll;
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request_time" "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 2048;
+    client_max_body_size 20m;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    root         /usr/share/nginx/html;
+
+    server {
+        listen      80;
+        if ($time_iso8601 ~ "^(\d{4})-(\d{2})-(\d{2})") {
+                                set $year $1;
+                                set $month $2;
+                                set $day $3;
+        }
+        access_log /var/log/nginx/access_$year-$month-$day.log main;
+
+        location /api/ {
+            proxy_pass http://apist:8080/;
+            proxy_redirect default;
+        }
+        location /ws{
+            proxy_pass http://apist:8080;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+        location / {
+                root   /usr/share/nginx/html;
+                index  index.html index.htm;
+        }
+    }
+}
+docker:
+
+docker run --name frontst --restart=always --link apist:apist -p8021:80  -v /opt/frontnginx/nginx.conf:/etc/nginx/nginx.conf -v /opt/frontnginx/html:/usr/share/nginx/html  -v /opt/frontnginx/log:/var/log/nginx -d nginx
+
+
+
+-----
+mysql
+
+docker run -it --name mysql57 --restart=always   -e MYSQL_ROOT_PASSWORD=bistro8888 -v /opt/db/conf:/etc/mysql/conf.d -v /opt/db/data:/var/lib/mysql -p 8014:7788 -d mysql:5.7.36
+
+
+
+-----
+docker run -d --name mongo-yapi mongo
+
+
+docker pull registry.cn-hangzhou.aliyuncs.com/anoy/yapi
+
+
+docker run -it --rm \
+  --link mongo-yapi:mongo \
+  --entrypoint npm \
+  --workdir /api/vendors \
+  registry.cn-hangzhou.aliyuncs.com/anoy/yapi \
+  run install-server
+
+
+docker run -d \
+  --name yapi \
+  --link mongo-yapi:mongo \
+  --workdir /api/vendors \
+  -p 8030:3000 \
+  registry.cn-hangzhou.aliyuncs.com/anoy/yapi \
+  server/app.js
+
+
+
+
+-------
+币安转发
+
+nginx.config
+
+user root;
+worker_processes auto;
+error_log /var/log/nginx/error.log;
+pid /run/nginx.pid;
+
+worker_rlimit_nofile 100000;
+include /usr/share/nginx/modules/*.conf;
+
+events {
+    use epoll;
+    worker_connections 1024;
+}
+
+http {
+    log_format  main  '$remote_addr - $remote_user [$time_local] "$request" '
+                      '$status $body_bytes_sent "$http_referer" '
+                      '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log  /var/log/nginx/access.log  main;
+
+    sendfile            on;
+    tcp_nopush          on;
+    tcp_nodelay         on;
+    keepalive_timeout   65;
+    types_hash_max_size 2048;
+    client_max_body_size 20m;
+
+    include             /etc/nginx/mime.types;
+    default_type        application/octet-stream;
+
+    root         /usr/share/nginx/html;
+
+    server {
+        listen      9033;
+
+
+        location /ws{
+            proxy_pass https://stream.binance.com:9443;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection "upgrade";
+        }
+
+    }
+}
+docker run --name biannginx --restart=always  -p 9033:9033  -v /opt/biannginx/nginx.conf:/etc/nginx/nginx.conf  -v /opt/biannginx/log:/var/log/nginx -d nginx

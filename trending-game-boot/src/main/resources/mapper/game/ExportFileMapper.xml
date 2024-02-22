@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.ExportFileMapper">
+    
+    <resultMap type="com.bistro.module.game.domain.ExportFile" id="ExportFileResult">
+        <result property="id"    column="id"    />
+        <result property="uid"    column="uid"    />
+        <result property="userName"    column="user_name"    />
+        <result property="fileName"    column="file_name"    />
+        <result property="password"    column="password"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="isDeleted"    column="is_deleted"    />
+    </resultMap>
+
+    <sql id="selectExportFileVo">
+        select id, uid, user_name, file_name, password, create_time, update_time, status, is_deleted from export_file
+    </sql>
+
+    <select id="selectExportFileList" parameterType="com.bistro.module.game.domain.ExportFile" resultMap="ExportFileResult">
+        <include refid="selectExportFileVo"/>
+        <where>
+            <if test="uid != null">and uid = #{uid}</if>
+        </where>
+        order by id desc
+    </select>
+    
+    <select id="selectExportFileById" parameterType="Integer" resultMap="ExportFileResult">
+        <include refid="selectExportFileVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertExportFile" parameterType="com.bistro.module.game.domain.ExportFile" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into export_file
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="uid != null">uid,</if>
+            <if test="userName != null and userName != ''">user_name,</if>
+            <if test="fileName != null and fileName != ''">file_name,</if>
+            <if test="password != null and password != ''">password,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="isDeleted != null">is_deleted,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="uid != null">#{uid},</if>
+            <if test="userName != null and userName != ''">#{userName},</if>
+            <if test="fileName != null and fileName != ''">#{fileName},</if>
+            <if test="password != null and password != ''">#{password},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="isDeleted != null">#{isDeleted},</if>
+         </trim>
+    </insert>
+
+    <update id="updateExportFile" parameterType="com.bistro.module.game.domain.ExportFile">
+        update export_file
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="userName != null and userName != ''">user_name = #{userName},</if>
+            <if test="fileName != null and fileName != ''">file_name = #{fileName},</if>
+            <if test="password != null and password != ''">password = #{password},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="isDeleted != null">is_deleted = #{isDeleted},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteExportFileById" parameterType="Integer">
+        delete from export_file where id = #{id}
+    </delete>
+
+    <delete id="deleteExportFileByIds" parameterType="String">
+        delete from export_file where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

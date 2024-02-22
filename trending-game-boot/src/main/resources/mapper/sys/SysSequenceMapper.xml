@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.sys.mapper.SysSequenceMapper">
+    
+    <resultMap type="SysSequence" id="Result">
+        <result property="id"    column="id"    />
+        <result property="seqName"    column="seq_name"    />
+        <result property="value"    column="value"    />
+    </resultMap>
+
+
+    <select id="selectSequenceByName" resultMap="Result" >
+        select * from sys_sequence where seq_name = #{name}
+    </select>
+
+
+    <update id="incrementValue">
+        update sys_sequence
+            set value=value+1
+        where id = #{id} and value=#{value}
+    </update>
+</mapper>

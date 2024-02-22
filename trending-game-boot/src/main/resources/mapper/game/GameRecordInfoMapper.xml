@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.GameRecordInfoMapper">
+    <resultMap type="com.bistro.module.game.domain.GameRecordInfo" id="GameRecordInfoResult">
+        <result property="id" column="id"/>
+        <result property="betId" column="bet_id"/>
+        <result property="uid" column="uid"/>
+        <result property="openId" column="open_id"/>
+        <result property="gameCode" column="game_code"/>
+        <result property="gameContent" column="game_content"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+    </resultMap>
+
+    <sql id="selectGameRecordInfoVo">
+        select id,
+               bet_id,
+               uid,
+               open_id,
+               game_code,
+               game_content,
+               create_time,
+               update_time
+        from game_record_info
+    </sql>
+
+    <select id="selectGameRecordInfoList" parameterType="com.bistro.module.game.domain.GameRecordInfo"
+            resultMap="GameRecordInfoResult">
+        <include refid="selectGameRecordInfoVo"/>
+        <where>
+            <if test="betId != null ">
+                and bet_id = #{betId}
+            </if>
+            <if test="uid != null ">
+                and uid = #{uid}
+            </if>
+            <if test="openId != null  and openId != ''">
+                and open_id = #{openId}
+            </if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectGameRecordInfoById" parameterType="Long" resultMap="GameRecordInfoResult">
+        <include refid="selectGameRecordInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGameRecordInfo" parameterType="com.bistro.module.game.domain.GameRecordInfo">
+        insert into game_record_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="betId != null">
+                bet_id,
+            </if>
+            <if test="uid != null">
+                uid,
+            </if>
+            <if test="openId != null and openId != ''">
+                open_id,
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                game_code,
+            </if>
+            <if test="gameContent != null and gameContent != ''">
+                game_content,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id},
+            </if>
+            <if test="betId != null">
+                #{betId},
+            </if>
+            <if test="uid != null">
+                #{uid},
+            </if>
+            <if test="openId != null and openId != ''">
+                #{openId},
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                #{gameCode},
+            </if>
+            <if test="gameContent != null and gameContent != ''">
+                #{gameContent},
+            </if>
+            <if test="createTime != null">
+                #{createTime},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateGameRecordInfo" parameterType="com.bistro.module.game.domain.GameRecordInfo">
+        update game_record_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="betId != null">
+                bet_id = #{betId},
+            </if>
+            <if test="uid != null">
+                uid = #{uid},
+            </if>
+            <if test="openId != null and openId != ''">
+                open_id = #{openId},
+            </if>
+            <if test="gameCode != null and gameCode != ''">
+                game_code = #{gameCode},
+            </if>
+            <if test="gameContent != null and gameContent != ''">
+                game_content = #{gameContent},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGameRecordInfoById" parameterType="Long">
+        delete
+        from game_record_info
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteGameRecordInfoByIds" parameterType="String">
+        delete from game_record_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="selectGameRecordInfoByBetId" parameterType="Long" resultMap="GameRecordInfoResult">
+        <include refid="selectGameRecordInfoVo"/>
+        where bet_id = #{betId}
+    </select>
+
+    <update id="batchUpdateContent" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update game_record_info
+            <set>
+                game_content = #{item.gameContent}
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+
+    <select id="selectGameRecordByUidAndCode" parameterType="com.bistro.module.game.domain.GameBetRecordQuery"
+            resultType="com.bistro.module.game.domain.GameBetRecordInfo">
+        select gr.game_content,gr.bet_id, gb.round_no, gb.period_id, gp.draw_value, gp.draw_time, gb.payout_amount, gp.ext_info from
+        game_record_info gr inner join game_bet gb on gr.bet_id = gb.id
+        inner  join game_period gp on gp.id = gb.period_id
+        <where>
+            <if test="uid != null ">
+                and gb.uid = #{uid}
+            </if>
+            <if test="gameCode != null  and gameCode != ''">
+                and gb.game_code = #{gameCode}
+            </if>
+            <if test="subGameCode != null  and subGameCode != ''">
+                and gb.sub_game_code = #{subGameCode}
+            </if>
+        </where>
+        order by gb.create_time desc limit #{rows}
+    </select>
+</mapper>

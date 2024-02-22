@@ -1,0 +1,11 @@
+POST http://admin.brl.staging.smash.t1t.in/bistro_service_api/6012/player_info
+Content-Type: application/json
+
+{"merchant_code":"bistro20211123",
+  "sign":"eead70a872df512f6ba87ad0d682af7ddcbd08cb",
+  "timestamp":1641018260,
+  "token":"bERoWHQrZUJDWThwbHlLdFhPZ2JPUT09",
+  "unique_id":"0fb49fb2483f4e3082b6da2e7ecaa5ed"}
+
+
+###

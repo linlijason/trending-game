@@ -1,0 +1,5 @@
+singleServerConfig:
+  address: 'redis://india-redis.9djc9g.0001.aps1.cache.amazonaws.com:6379'
+  database: 0
+  subscriptionConnectionPoolSize: 200
+  connectionMinimumIdleSize: 1

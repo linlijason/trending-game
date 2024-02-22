@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.payment.mapper.GamePaymentInfoMapper">
+    
+    <resultMap type="com.bistro.module.payment.domain.GamePaymentInfo" id="GamePaymentInfoResult">
+        <result property="id"    column="id"    />
+        <result property="uid"    column="uid"    />
+        <result property="openId"    column="open_id"    />
+        <result property="paymentOrderNo"    column="payment_order_no"    />
+        <result property="businessId"    column="business_id"    />
+        <result property="businsesType"    column="businses_type"    />
+        <result property="paymentChannel"    column="payment_channel"    />
+        <result property="chanelOrderNo"    column="chanel_order_no"    />
+        <result property="amount"    column="amount"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="currency"    column="currency"    />
+        <result property="updateTime"    column="update_time"    />
+        <result property="status"    column="status"    />
+        <result property="content"    column="content"    />
+    </resultMap>
+
+    <sql id="selectGamePaymentInfoVo">
+        select id, uid, open_id, payment_order_no, business_id, businses_type, payment_channel, chanel_order_no, amount, create_time, currency, update_time, status, content from game_payment_info
+    </sql>
+
+    <select id="selectGamePaymentInfoList" parameterType="com.bistro.module.payment.domain.GamePaymentInfo" resultMap="GamePaymentInfoResult">
+        <include refid="selectGamePaymentInfoVo"/>
+        <where>  
+            <if test="uid != null "> and uid = #{uid}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="paymentOrderNo != null  and paymentOrderNo != ''"> and payment_order_no = #{paymentOrderNo}</if>
+            <if test="businessId != null "> and business_id = #{businessId}</if>
+            <if test="businsesType != null "> and businses_type = #{businsesType}</if>
+            <if test="paymentChannel != null  and paymentChannel != ''"> and payment_channel = #{paymentChannel}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+            <if test="currency != null  and currency != ''"> and currency = #{currency}</if>
+            <if test="status != null "> and status = #{status}</if>
+            <if test="content != null  and content != ''"> and content = #{content}</if>
+        </where>
+        order by create_time desc
+    </select>
+    
+    <select id="selectGamePaymentInfoById" parameterType="Long" resultMap="GamePaymentInfoResult">
+        <include refid="selectGamePaymentInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGamePaymentInfo" parameterType="com.bistro.module.payment.domain.GamePaymentInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into game_payment_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="uid != null">uid,</if>
+            <if test="openId != null and openId != ''">open_id,</if>
+            <if test="paymentOrderNo != null and paymentOrderNo != ''">payment_order_no,</if>
+            <if test="businessId != null">business_id,</if>
+            <if test="businsesType != null">businses_type,</if>
+            <if test="paymentChannel != null and paymentChannel != ''">payment_channel,</if>
+            <if test="chanelOrderNo != null and chanelOrderNo != ''">chanel_order_no,</if>
+            <if test="amount != null">amount,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="currency != null and currency != ''">currency,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="status != null">status,</if>
+            <if test="content != null and content != ''">content,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="uid != null">#{uid},</if>
+            <if test="openId != null and openId != ''">#{openId},</if>
+            <if test="paymentOrderNo != null and paymentOrderNo != ''">#{paymentOrderNo},</if>
+            <if test="businessId != null">#{businessId},</if>
+            <if test="businsesType != null">#{businsesType},</if>
+            <if test="paymentChannel != null and paymentChannel != ''">#{paymentChannel},</if>
+            <if test="chanelOrderNo != null and chanelOrderNo != ''">#{chanelOrderNo},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="currency != null and currency != ''">#{currency},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="status != null">#{status},</if>
+            <if test="content != null and content != ''">#{content},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGamePaymentInfo" parameterType="com.bistro.module.payment.domain.GamePaymentInfo">
+        update game_payment_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="openId != null and openId != ''">open_id = #{openId},</if>
+            <if test="paymentOrderNo != null and paymentOrderNo != ''">payment_order_no = #{paymentOrderNo},</if>
+            <if test="businessId != null">business_id = #{businessId},</if>
+            <if test="businsesType != null">businses_type = #{businsesType},</if>
+            <if test="paymentChannel != null and paymentChannel != ''">payment_channel = #{paymentChannel},</if>
+            <if test="chanelOrderNo != null and chanelOrderNo != ''">chanel_order_no = #{chanelOrderNo},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="status != null">status = #{status},</if>
+            <if test="content != null and content != ''">content = #{content},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGamePaymentInfoById" parameterType="Long">
+        delete from game_payment_info where id = #{id}
+    </delete>
+
+    <delete id="deleteGamePaymentInfoByIds" parameterType="String">
+        delete from game_payment_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsertGamePaymentInfo" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into game_payment_info (uid,open_id,payment_order_no,business_id,businses_type,payment_channel,
+        chanel_order_no,amount,create_time,currency,update_time,status,content) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.uid},#{item.openId},#{item.paymentOrderNo},#{item.businessId},#{item.businsesType},
+            #{item.paymentChannel},#{item.chanelOrderNo},#{item.amount},#{item.createTime},
+            #{item.currency},#{item.updateTime},#{item.status},#{item.content})
+        </foreach>
+    </insert>
+
+    <update id="updateBatchResult" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update game_payment_info
+            <set>
+                status=#{item.status},
+                content=#{item.content},
+                update_time=#{item.updateTime},
+            </set>
+            where id = #{item.id}
+        </foreach>
+    </update>
+</mapper>

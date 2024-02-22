@@ -1,0 +1,6 @@
+singleServerConfig:
+  address: 'redis://47.108.189.93:8016'
+  password: bistro9999
+  database: 0
+  subscriptionConnectionPoolSize: 200
+  connectionMinimumIdleSize: 1

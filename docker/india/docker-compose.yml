@@ -1,0 +1,33 @@
+version: "3"
+services:
+  indapi:
+    image: 'registry.cn-hangzhou.aliyuncs.com/bistro/api:2201015_1'
+    container_name: indapi
+    environment:
+      - SPRING_ACTIVE=-Dspring.profiles.active=stind
+      - JASYPT_PASSWORD=-Djasypt.encryptor.password=2bcsds
+    volumes:
+      - '/opt/ind/app/config:/opt/app/config'
+      - '/opt/ind/app/logs:/opt/app/logs'
+
+  front:
+    image: 'registry.cn-hangzhou.aliyuncs.com/bistro/front:2201015_1'
+    ports:
+      - "8050:80"
+    links:
+      - indapi:api
+    depends_on:
+      - indapi
+    volumes:
+      - "/opt/ind/front/log:/var/log/nginx"
+
+  mgt:
+    image: 'registry.cn-hangzhou.aliyuncs.com/bistro/mgt:2201013_1'
+    ports:
+      - "8051:80"
+    links:
+      - indapi:api
+    depends_on:
+      - indapi
+    volumes:
+      - "/opt/ind/mgt/log:/var/log/nginx"

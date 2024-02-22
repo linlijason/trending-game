@@ -1,0 +1,4 @@
+
+#foreach ($column in $cols)
+private $column.javaType $column.javaName;
+#end

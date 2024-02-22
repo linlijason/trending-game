@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.player.mapper.GameUserInfoMapper">
+    
+    <resultMap type="com.bistro.module.player.domain.GameUserInfo" id="GameUserInfoResult">
+        <result property="id"    column="id"    />
+        <result property="openId"    column="open_id"    />
+        <result property="fromCode"    column="from_code"    />
+        <result property="name"    column="name"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectGameUserInfoVo">
+        select id, open_id, from_code, name, create_time, update_time from game_user_info
+    </sql>
+
+    <select id="selectGameUserInfoList" parameterType="com.bistro.module.player.domain.GameUserInfo" resultMap="GameUserInfoResult">
+        <include refid="selectGameUserInfoVo"/>
+        <where>  
+            <if test="id != null "> and id = #{id}</if>
+            <if test="name != null  and name != ''"> and name = #{name}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+            <if test="fromCode != null  and fromCode != ''"> and from_code = #{fromCode}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''"> and create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
+        </where>
+    </select>
+    
+    <select id="selectGameUserInfoById" parameterType="Long" resultMap="GameUserInfoResult">
+        <include refid="selectGameUserInfoVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGameUserInfo" parameterType="com.bistro.module.player.domain.GameUserInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into game_user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="openId != null and openId != ''">open_id,</if>
+            <if test="fromCode != null and fromCode != ''">from_code,</if>
+            <if test="name != null and name != ''">name,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="openId != null and openId != ''">#{openId},</if>
+            <if test="fromCode != null and fromCode != ''">#{fromCode},</if>
+            <if test="name != null and name != ''">#{name},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGameUserInfo" parameterType="com.bistro.module.player.domain.GameUserInfo">
+        update game_user_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="openId != null and openId != ''">open_id = #{openId},</if>
+            <if test="fromCode != null and fromCode != ''">from_code = #{fromCode},</if>
+            <if test="name != null and name != ''">name = #{name},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGameUserInfoById" parameterType="Long">
+        delete from game_user_info where id = #{id}
+    </delete>
+
+    <delete id="deleteGameUserInfoByIds" parameterType="String">
+        delete from game_user_info where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="findByUserNameAndFromCode" resultMap="GameUserInfoResult">
+        <include refid="selectGameUserInfoVo"/>
+        where name = #{name} and from_code = #{fromCode}
+    </select>
+
+</mapper>

@@ -1,0 +1,129 @@
+jasypt:
+  encryptor:
+    algorithm: PBEWITHHMACSHA512ANDAES_256
+
+encrypt:
+  jdbc-username: ENC(Xc3ssbDW23BwgRTWi/swsQHrukCPhuZe/ExZtXdLFeqDsMr9b/21+QXxaxVTwrDb)
+  jdbc-password: ENC(8WfU+bFDcrgC1ceOUjzBmPAl/qw4ZZ99qmWwxq8RyJDx9fhaMl7O6MMwMDtvDE2J)
+  jdbc-url: ENC(p3wXqTdrWWsyJBX9HNK95kPqlzDTjvpGksl3GoJkKIfI5LA4HOsOHHGqUchETgu8Ue/6mvRfV5X6X2os7HUL+Q==)
+
+# 数据源配置
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driverClassName: com.mysql.cj.jdbc.Driver
+    druid:
+      # 主库数据源
+      master:
+        url: jdbc:mysql://${encrypt.jdbc-url}?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&allowMultiQueries=true
+        username: ${encrypt.jdbc-username}
+        password: ${encrypt.jdbc-password}
+      # 从库数据源
+      slave:
+        enabled: false
+        url:
+        username:
+        password:
+      # 初始连接数
+      initialSize: 1
+      # 最小连接池数量
+      minIdle: 10
+      # 最大连接池数量
+      maxActive: 20
+      # 配置获取连接等待超时的时间
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 60000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 300000
+      # 配置一个连接在池中最大生存的时间，单位是毫秒
+      maxEvictableIdleTimeMillis: 900000
+      # 配置检测连接是否有效
+      validationQuery: SELECT 1
+      testWhileIdle: true
+      testOnBorrow: false
+      testOnReturn: false
+      webStatFilter:
+        enabled: false
+      statViewServlet:
+        enabled: false
+        # 设置白名单，不填则允许所有访问
+        allow:
+        url-pattern: /druid/*
+        # 控制台管理用户名和密码
+        login-username: ruoyi
+        login-password: 123456
+      filter:
+        stat:
+          enabled: false
+          # 慢SQL记录
+          log-slow-sql: true
+          slow-sql-millis: 1000
+          merge-sql: true
+        wall:
+          config:
+            multi-statement-allow: true
+  redis:
+    redisson:
+      config: '{
+        "singleServerConfig": {
+          "address": "redis://172.17.0.1:8016",
+          "password": "bistro9999",
+          "database": 1,
+          "subscriptionConnectionPoolSize": 200,
+          "connectionMinimumIdleSize": 1
+        }
+      }'
+
+urls:
+  ssUrl: 'http://172.28.8.124:9999'
+  seamlessUrl: 'http://admin.inr.staging.smashinr.t1t.in/bistro_service_api/6012'
+  gameLaunchUrl:
+    60: 'http://47.108.189.93:8050'
+    61: 'http://47.108.189.93:8050/coin/'
+  websocket:
+    binance: 'ws://47.241.229.155:9033/stream?streams='
+
+logging:
+  level:
+    # feign日志以什么级别监控哪个接口
+    com.bistro.module.ssproxy.service.client: debug
+  config: classpath:logback-st.xml
+
+logback:
+  level: debug
+
+coin:
+  #支持的币种 下面的stream，symbol 一一对应
+  supports: BTC,ETH
+  #订阅币安stream 必须包含supports 支持的币种
+  stream:
+    BTC: 'btcusdt@ticker'
+    ETH: 'ethusdt@ticker'
+  symbol:
+    BTC: 'BTCUSDT'
+    ETH: 'ETHUSDT'
+  #投注和开奖时间 秒
+  duration:
+    bet: 30
+    draw: 5
+  batchPayout: true
+  #调用batchpayout接口一次数量
+  batchPayoutGroupSize: 20
+  #开奖时数据连续性检查，测试环境可能因为数据丢失造成取不到开奖时间前2秒数据。生产环境需要check
+  drawTimeContinuityCheck: false
+#商户配置
+merchant:
+  config:
+    bistro20211123:
+      secureKey: ENC(ckocHrCWCiNnfSQhylOJWYVXXy+8kX1zMj3LF/T/18hJIApza7LY9ACCMrAnkA5ZRrIBPhbmRCVvXZ7hP5D0J4rawPRl4+fZJ7JFfXHLtLg=)
+      signKey: ENC(ieqAznpviZ3a/kdfbPK4A9vM8VEY2LPBxRR9RK0bVNW73i7I1xdbIs05l/DCZW3v)
+
+currency:
+  default: "BRL"
+
+export:
+  path: '/opt/file/'
+
+admin:
+  name: bistro-admin-INR(st)

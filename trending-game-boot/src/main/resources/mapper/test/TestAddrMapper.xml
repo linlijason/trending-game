@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.test.mapper.TestAddrMapper">
+    
+    <resultMap type="com.bistro.module.test.domain.TestAddr" id="TestAddrResult">
+        <result property="id"    column="id"    />
+        <result property="addr"    column="addr"    />
+        <result property="words"    column="words"    />
+        <result property="addr2"    column="addr2"    />
+    </resultMap>
+
+    <sql id="selectTestAddrVo">
+        select id, addr, words, addr2 from test_addr
+    </sql>
+
+    <select id="selectTestAddrList" parameterType="com.bistro.module.test.domain.TestAddr" resultMap="TestAddrResult">
+        <include refid="selectTestAddrVo"/>
+        <where>  
+            <if test="addr != null  and addr != ''"> and addr = #{addr}</if>
+            <if test="words != null  and words != ''"> and words = #{words}</if>
+            <if test="addr2 != null  and addr2 != ''"> and addr2 = #{addr2}</if>
+        </where>
+    </select>
+    
+    <select id="selectTestAddrById" parameterType="Integer" resultMap="TestAddrResult">
+        <include refid="selectTestAddrVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertTestAddr" parameterType="com.bistro.module.test.domain.TestAddr" useGeneratedKeys="true" keyProperty="id">
+        insert into test_addr
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="addr != null">addr,</if>
+            <if test="words != null">words,</if>
+            <if test="addr2 != null">addr2,</if>
+            <if test="pass != null">pass,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="addr != null">#{addr},</if>
+            <if test="words != null">#{words},</if>
+            <if test="addr2 != null">#{addr2},</if>
+            <if test="pass != null">#{pass},</if>
+         </trim>
+    </insert>
+
+    <update id="updateTestAddr" parameterType="com.bistro.module.test.domain.TestAddr">
+        update test_addr
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="addr != null">addr = #{addr},</if>
+            <if test="words != null">words = #{words},</if>
+            <if test="addr2 != null">addr2 = #{addr2},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteTestAddrById" parameterType="Integer">
+        delete from test_addr where id = #{id}
+    </delete>
+
+    <delete id="deleteTestAddrByIds" parameterType="String">
+        delete from test_addr where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+</mapper>

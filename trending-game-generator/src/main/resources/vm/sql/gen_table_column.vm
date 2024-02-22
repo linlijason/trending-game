@@ -1,0 +1,7 @@
+###foreach ($c in $cols)
+##    {field:'$c',type:'input'},
+###end
+
+#foreach ($c in $cols)
+    {dataIndex:'$c.field',title:'$c.title', width: 200,scopedSlots: { customRender: '$c.field' } },
+#end

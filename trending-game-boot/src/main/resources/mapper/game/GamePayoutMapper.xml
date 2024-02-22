@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.GamePayoutMapper">
+
+    <resultMap type="com.bistro.module.game.domain.GamePayout" id="GamePayoutResult">
+        <result property="id" column="id"/>
+        <result property="uid" column="uid"/>
+        <result property="openId" column="open_id"/>
+        <result property="betId" column="bet_id"/>
+        <result property="gameCode" column="game_code"/>
+        <result property="amount" column="amount"/>
+        <result property="multiplier" column="multiplier"/>
+        <result property="currency" column="currency"/>
+        <result property="createTime" column="create_time"/>
+        <result property="updateTime" column="update_time"/>
+        <result property="subGameCode" column="sub_game_code"/>
+        <result property="periodId" column="period_id"/>
+    </resultMap>
+
+    <sql id="selectGamePayoutVo">
+        select id,
+               uid,
+               open_id,
+               bet_id,
+               game_code,
+               amount,
+               multiplier,
+               currency,
+               create_time,
+               update_time,
+               sub_game_code,
+               period_id
+        from game_payout
+    </sql>
+
+    <select id="selectGamePayoutList" parameterType="com.bistro.module.game.domain.GamePayout"
+            resultMap="GamePayoutResult">
+        <include refid="selectGamePayoutVo"/>
+        <where>
+            <if test="uid != null ">and uid = #{uid}</if>
+            <if test="openId != null  and openId != ''">and open_id = #{openId}</if>
+            <if test="betId != null ">and bet_id = #{betId}</if>
+            <if test="currency != null  and currency != ''">and currency = #{currency}</if>
+            <if test="params.beginCreateTime != null and params.beginCreateTime != '' and params.endCreateTime != null and params.endCreateTime != ''">
+                and create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <if test="subGameCode != null  and subGameCode != ''">and sub_game_code = #{subGameCode}</if>
+            <if test="periodId != null ">and period_id = #{periodId}</if>
+        </where>
+    </select>
+
+    <select id="selectGamePayoutById" parameterType="Long" resultMap="GamePayoutResult">
+        <include refid="selectGamePayoutVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertGamePayout" parameterType="com.bistro.module.game.domain.GamePayout" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into game_payout
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="uid != null">uid,</if>
+            <if test="openId != null and openId != ''">open_id,</if>
+            <if test="betId != null">bet_id,</if>
+            <if test="gameCode != null and gameCode != ''">game_code,</if>
+            <if test="amount != null">amount,</if>
+            <if test="multiplier != null">multiplier,</if>
+            <if test="currency != null and currency != ''">currency,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+            <if test="subGameCode != null and subGameCode != ''">sub_game_code,</if>
+            <if test="periodId != null">period_id,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="uid != null">#{uid},</if>
+            <if test="openId != null and openId != ''">#{openId},</if>
+            <if test="betId != null">#{betId},</if>
+            <if test="gameCode != null and gameCode != ''">#{gameCode},</if>
+            <if test="amount != null">#{amount},</if>
+            <if test="multiplier != null">#{multiplier},</if>
+            <if test="currency != null and currency != ''">#{currency},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+            <if test="subGameCode != null and subGameCode != ''">#{subGameCode},</if>
+            <if test="periodId != null">#{periodId},</if>
+        </trim>
+    </insert>
+
+    <update id="updateGamePayout" parameterType="com.bistro.module.game.domain.GamePayout">
+        update game_payout
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="openId != null and openId != ''">open_id = #{openId},</if>
+            <if test="betId != null">bet_id = #{betId},</if>
+            <if test="gameCode != null and gameCode != ''">game_code = #{gameCode},</if>
+            <if test="amount != null">amount = #{amount},</if>
+            <if test="multiplier != null">multiplier = #{multiplier},</if>
+            <if test="currency != null and currency != ''">currency = #{currency},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+            <if test="subGameCode != null and subGameCode != ''">sub_game_code = #{subGameCode},</if>
+            <if test="periodId != null">period_id = #{periodId},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGamePayoutById" parameterType="Long">
+        delete
+        from game_payout
+        where id = #{id}
+    </delete>
+
+    <delete id="deleteGamePayoutByIds" parameterType="String">
+        delete from game_payout where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <insert id="batchInsertGamePayout" parameterType="java.util.List" useGeneratedKeys="true" keyProperty="id">
+        insert into game_payout ( uid, open_id, bet_id, game_code, amount, multiplier,currency, create_time,
+        update_time, sub_game_code, period_id) values
+        <foreach collection="list" item="item" index="index" separator=",">
+            ( #{item.uid},#{item.openId},#{item.betId},#{item.gameCode},#{item.amount},#{item.multiplier},
+            #{item.currency},#{item.createTime},#{item.updateTime},#{item.subGameCode},
+            #{item.periodId})
+        </foreach>
+    </insert>
+</mapper>

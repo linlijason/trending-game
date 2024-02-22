@@ -1,0 +1,26 @@
+INSERT INTO `gen_table`(`table_name`, `table_comment`,
+`sub_table_name`, `sub_table_fk_name`, `class_name`,
+`tpl_category`, `package_name`, `module_name`,
+`business_name`, `function_name`, `function_author`,
+`gen_type`, `gen_path`, `options`, `create_by`,
+`create_time`, `update_by`, `update_time`, `remark`)
+VALUES ('$table', 'todo', NULL, NULL, '$className', 'crud', '',
+'', '', '', 'jason.lin', '0', '/', '', 'lihnli', NULL, 'linli', '2021-11-10 12:01:27', '');
+
+SELECT @parentId := LAST_INSERT_ID();
+
+
+#foreach ($column in $cols)
+INSERT INTO `gen_table_column`(
+`table_id`, `column_name`, `column_comment`,
+`column_type`, `java_type`, `java_field`, `is_pk`,
+`is_increment`, `is_required`, `is_insert`,
+`is_edit`, `is_list`, `is_query`, `query_type`,
+`html_type`, `dict_type`, `sort`, `create_by`,
+`create_time`, `update_by`, `update_time`) VALUES (
+@parentId,
+'${column.name}',
+'$column.comment', '$column.type', '$column.javaType',
+'$column.javaName', '$column.pk', '$column.pk', NULL, NULL, NULL, '1',
+NULL, 'EQ', NULL, '', NULL, '', NULL, '', '2021-11-10 12:01:27');
+#end

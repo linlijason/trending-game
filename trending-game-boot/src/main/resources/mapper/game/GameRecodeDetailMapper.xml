@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.game.mapper.GameRecodeDetailMapper">
+    
+    <resultMap type="com.bistro.module.game.domain.GameRecodeDetail" id="GameRecodeDetailResult">
+        <result property="id"    column="id"    />
+        <result property="betId"    column="bet_id"    />
+        <result property="uid"    column="uid"    />
+        <result property="openId"    column="open_id"    />
+        <result property="gameCode"    column="game_code"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="index"    column="index"    />
+        <result property="shot"    column="shot"    />
+    </resultMap>
+
+    <sql id="selectGameRecodeDetailVo">
+        select id, bet_id, uid, open_id, game_code, create_time, `index`, shot from game_recode_detail
+    </sql>
+
+    <select id="selectGameRecodeDetailList" parameterType="com.bistro.module.game.domain.GameRecodeDetail" resultMap="GameRecodeDetailResult">
+        <include refid="selectGameRecodeDetailVo"/>
+        <where>  
+            <if test="betId != null "> and bet_id = #{betId}</if>
+            <if test="uid != null "> and uid = #{uid}</if>
+            <if test="openId != null  and openId != ''"> and open_id = #{openId}</if>
+        </where>
+    </select>
+    
+    <select id="selectGameRecodeDetailById" parameterType="Long" resultMap="GameRecodeDetailResult">
+        <include refid="selectGameRecodeDetailVo"/>
+        where id = #{id}
+    </select>
+        
+    <insert id="insertGameRecodeDetail" parameterType="com.bistro.module.game.domain.GameRecodeDetail">
+        insert into game_recode_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">id,</if>
+            <if test="betId != null">bet_id,</if>
+            <if test="uid != null">uid,</if>
+            <if test="openId != null and openId != ''">open_id,</if>
+            <if test="gameCode != null and gameCode != ''">game_code,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="index != null">`index`,</if>
+            <if test="shot != null">shot,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">#{id},</if>
+            <if test="betId != null">#{betId},</if>
+            <if test="uid != null">#{uid},</if>
+            <if test="openId != null and openId != ''">#{openId},</if>
+            <if test="gameCode != null and gameCode != ''">#{gameCode},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="index != null">#{index},</if>
+            <if test="shot != null">#{shot},</if>
+         </trim>
+    </insert>
+
+    <update id="updateGameRecodeDetail" parameterType="com.bistro.module.game.domain.GameRecodeDetail">
+        update game_recode_detail
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="betId != null">bet_id = #{betId},</if>
+            <if test="uid != null">uid = #{uid},</if>
+            <if test="openId != null and openId != ''">open_id = #{openId},</if>
+            <if test="gameCode != null and gameCode != ''">game_code = #{gameCode},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="index != null">`index` = #{index},</if>
+            <if test="shot != null">shot = #{shot},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteGameRecodeDetailById" parameterType="Long">
+        delete from game_recode_detail where id = #{id}
+    </delete>
+
+    <delete id="deleteGameRecodeDetailByIds" parameterType="String">
+        delete from game_recode_detail where id in 
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <select id="countGameRecodeDetailByBetId" resultType="Integer">
+        select count(1) from game_recode_detail where bet_id = #{betId} and shot = 1
+    </select>
+
+    <insert id="batchInsertGameRecodeDetail">
+        insert into game_recode_detail ( bet_id, uid, open_id, game_code, create_time, `index`, shot)
+        values
+        <foreach close="" collection="gameRecodeDetails" index="index" item="item" open="" separator=",">
+            (#{item.betId}, #{item.uid}, #{item.openId},
+            #{item.gameCode}, #{item.createTime}, #{item.index}, #{item.shot}
+            )
+        </foreach>
+    </insert>
+
+    <select id="selectIndexShotList" resultMap="GameRecodeDetailResult">
+        select `index`, shot  from game_recode_detail where bet_id = #{betId}
+    </select>
+</mapper>

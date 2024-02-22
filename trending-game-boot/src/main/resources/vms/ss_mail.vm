@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<body>
+<div dir=3D"ltr">
+    <div dir=3D"ltr">Hi Colleague,</div>
+    <div dir=3D"ltr">
+        <br/>
+        <div dir=3D"ltr">This email will guide you to install and use Shadowsocks VPN.</div>
+        <div dir=3D"ltr">
+            <br/>
+            <div dir=3D"ltr">1. vpn parameters:
+                <ul>
+                    <li>Host: $data.ext1</li>
+                    <li>Port: $data.port</li>
+                    <li>Passwrod: $data.secret</li>
+                    <li>Encryption: $data.cipher</li>
+                </ul>
+            </div>
+            <div dir=3D"ltr">2. Please select the corresponding operating system to download and install.</div>
+            <div dir=3D"ltr">
+                <ul>
+                    <li>Mac: <a href="https://publisher.bistro.com/internal/ShadowsocksX-NG.1.9.4.zip">Download</a><br/>
+                    <li>Windows: <a href="https://publisher.bistro.com/internal/Shadowsocks-win-4.4.0.185.zip">Download</a><br/>
+                    <li>Android: <a href="https://publisher.bistro.com/internal/Shadowsocks_v5.2.6.apk">Download</a><br/>
+                    <li>iOS: <a href="https://apps.apple.com/us/app/outline-app/id1356177741#?platform=iphone">Download</a> (Please change your App Store country to U.S or Other countries have Shadowsocks VPN )</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

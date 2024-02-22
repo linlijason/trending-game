@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bistro.module.merchant.mapper.MerchantInfoMapper">
+
+    <resultMap type="com.bistro.module.merchant.domain.MerchantInfo" id="MerchantInfoResult">
+        <result property="id"    column="id"    />
+        <result property="merchantCode"    column="merchant_code"    />
+        <result property="secureKey"    column="secure_key"    />
+        <result property="signKey"    column="sign_key"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectMerchantInfoVo">
+        select id, merchant_code, secure_key, sign_key, create_time, update_time from merchant_info
+    </sql>
+
+    <select id="selectMerchantInfoList" parameterType="com.bistro.module.merchant.domain.MerchantInfo" resultMap="MerchantInfoResult">
+        <include refid="selectMerchantInfoVo"/>
+        <where>
+            <if test="merchantCode != null  and merchantCode != ''"> and merchant_code = #{merchantCode}</if>
+            <if test="secureKey != null  and secureKey != ''"> and secure_key = #{secureKey}</if>
+            <if test="signKey != null  and signKey != ''"> and sign_key = #{signKey}</if>
+        </where>
+    </select>
+
+    <select id="selectMerchantInfoById" parameterType="Integer" resultMap="MerchantInfoResult">
+        <include refid="selectMerchantInfoVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertMerchantInfo" parameterType="com.bistro.module.merchant.domain.MerchantInfo" useGeneratedKeys="true" keyProperty="id">
+        insert into merchant_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="merchantCode != null and merchantCode != ''">merchant_code,</if>
+            <if test="secureKey != null and secureKey != ''">secure_key,</if>
+            <if test="signKey != null and signKey != ''">sign_key,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateTime != null">update_time,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="merchantCode != null and merchantCode != ''">#{merchantCode},</if>
+            <if test="secureKey != null and secureKey != ''">#{secureKey},</if>
+            <if test="signKey != null and signKey != ''">#{signKey},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+        </trim>
+    </insert>
+
+    <update id="updateMerchantInfo" parameterType="com.bistro.module.merchant.domain.MerchantInfo">
+        update merchant_info
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="merchantCode != null and merchantCode != ''">merchant_code = #{merchantCode},</if>
+            <if test="secureKey != null and secureKey != ''">secure_key = #{secureKey},</if>
+            <if test="signKey != null and signKey != ''">sign_key = #{signKey},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteMerchantInfoById" parameterType="Integer">
+        delete from merchant_info where id = #{id}
+    </delete>
+
+    <delete id="deleteMerchantInfoByIds" parameterType="String">
+        delete from merchant_info where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+    <select id="selectMerchantInfoByCode" resultMap="MerchantInfoResult">
+        <include refid="selectMerchantInfoVo"/>
+        where merchant_code = #{code}
+    </select>
+
+</mapper>

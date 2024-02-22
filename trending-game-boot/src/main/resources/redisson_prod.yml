@@ -1,0 +1,5 @@
+singleServerConfig:
+  address: 'redis://brazil.iqbj8a.0001.sae1.cache.amazonaws.com:6379'
+  database: 0
+  subscriptionConnectionPoolSize: 200
+  connectionMinimumIdleSize: 1
